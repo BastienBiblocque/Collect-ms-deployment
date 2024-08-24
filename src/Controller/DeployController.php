@@ -19,7 +19,7 @@ class DeployController extends AbstractController
     public function deploy(Request $request, EntityManagerInterface $entityManager, ShopRepository $shopRepository): Response
     {
         $higherShopPort = $shopRepository->findShopWithHighestPort();
-        $higherPort =  $higherShopPort->getPort();
+        $higherPort =  $higherShopPort ? $higherShopPort->getPort() : 3009;
         $newPort = (int)$higherPort + 1;
 
         $data = $request->getContent();
@@ -30,7 +30,6 @@ class DeployController extends AbstractController
         $shop->setPort($newPort);
         $shop->setStatus('non deploy');
         $shop->setTheme($data['theme']);
-        $shop->setTheme("cyberpunk");
         $shop->setShopId($data['id']);
         $entityManager->persist($shop);
         $entityManager->flush();
